@@ -11,4 +11,7 @@ RUN npx prisma generate
 
 EXPOSE 3001
 
-CMD ["sh", "-c", "npx prisma migrate deploy && node app.js"]
+COPY startup.sh .
+RUN chmod +x startup.sh
+
+CMD ["/bin/sh", "./startup.sh"]

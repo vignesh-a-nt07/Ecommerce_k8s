@@ -93,7 +93,7 @@ const Header = () => {
         <div className="flex justify-between h-32 bg-white items-center px-16 max-[1320px]:px-10  max-w-screen-2xl mx-auto max-[400px]:px-5">
           <Link href="/">
             <Image
-              src="/vicky.png"
+              src="/logo v1 svg.svg"
               width={130}
               height={130}
               alt="vicky logo"

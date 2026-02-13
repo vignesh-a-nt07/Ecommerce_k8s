@@ -47,7 +47,7 @@ services:
       dockerfile: Dockerfile
     container_name: ecommerce-backend
     environment:
-      DATABASE_URL: mysql://root:navat@mysql:3306/singitronic_nextjs
+      DATABASE_URL: mysql://root:navat@mysql:3306/vicky_nextjs
       NODE_ENV: development
       PORT: 3001
       CORS_ORIGIN: http://localhost:3000,http://frontend:3000
@@ -62,7 +62,7 @@ services:
     networks:
       - ecommerce-network
     restart: unless-stopped
-    command: npm run dev
+    command: sh -c "npx prisma migrate deploy && node seed.js && npm run dev"
     healthcheck:
       test: ["CMD", "sh", "-c", "curl -f http://localhost:3001 || exit 1"]
       interval: 10s
@@ -77,11 +77,11 @@ services:
       dockerfile: Dockerfile.dev
     container_name: ecommerce-frontend
     environment:
-      NEXT_PUBLIC_API_BASE_URL: http://localhost:3001
+      NEXT_PUBLIC_API_BASE_URL: http://backend:3001
       NODE_ENV: development
       NEXTAUTH_URL: http://localhost:3000
       NEXTAUTH_SECRET: 12D16C923BA17672F89B18C1DB22A
-      DATABASE_URL: mysql://root:navat@mysql:3306/singitronic_nextjs
+      DATABASE_URL: mysql://root:navat@mysql:3306/vicky_nextjs
     ports:
       - "3000:3000"
     depends_on:

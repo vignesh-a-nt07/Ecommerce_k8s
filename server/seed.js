@@ -332,10 +332,10 @@ async function seedDatabase() {
 
     console.log("\n✅ Database seeded successfully!");
     console.log(`Total products: ${createdProducts.length}`);
-    process.exit(0);
+    await prisma.$disconnect();
   } catch (error) {
     console.error("❌ Error seeding database:", error);
-    process.exit(1);
+    await prisma.$disconnect();
   }
 }
 
