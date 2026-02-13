@@ -6,10 +6,10 @@ services:
     image: mysql:8.0
     container_name: ecommerce-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: navat
+      MYSQL_ROOT_PASSWORD: root_password_123
       MYSQL_DATABASE: vicky_nextjs
       MYSQL_USER: ecommerce_user
-      MYSQL_PASSWORD: ecommerce_pass
+      MYSQL_PASSWORD: ecommerce_pass_123
     ports:
       - "3307:3306"
     volumes:
@@ -30,8 +30,8 @@ services:
     container_name: ecommerce-phpmyadmin
     environment:
       PMA_HOST: mysql
-      PMA_USER: root
-      PMA_PASSWORD: navat
+      PMA_USER: ecommerce_user
+      PMA_PASSWORD: ecommerce_pass_123
     ports:
       - "8081:80"
     depends_on:
@@ -47,7 +47,7 @@ services:
       dockerfile: Dockerfile
     container_name: ecommerce-backend
     environment:
-      DATABASE_URL: mysql://root:navat@mysql:3306/vicky_nextjs
+      DATABASE_URL: mysql://ecommerce_user:ecommerce_pass_123@mysql:3306/vicky_nextjs
       NODE_ENV: development
       PORT: 3001
       CORS_ORIGIN: http://localhost:3000,http://frontend:3000
@@ -72,7 +72,6 @@ services:
   # Frontend (Next.js)
   frontend:
     build:
-    
       context: .
       dockerfile: Dockerfile.dev
     container_name: ecommerce-frontend
@@ -81,7 +80,7 @@ services:
       NODE_ENV: development
       NEXTAUTH_URL: http://localhost:3000
       NEXTAUTH_SECRET: 12D16C923BA17672F89B18C1DB22A
-      DATABASE_URL: mysql://root:navat@mysql:3306/vicky_nextjs
+      DATABASE_URL: mysql://ecommerce_user:ecommerce_pass_123@mysql:3306/vicky_nextjs
     ports:
       - "3000:3000"
     depends_on:

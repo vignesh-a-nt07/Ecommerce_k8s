@@ -3,7 +3,7 @@ variable "aws_region" {
 }
 
 variable "project_name" {
-  default = "vickytronic-site"
+  default = "vickytronic"
 }
 
 variable "kubernetes_version" {

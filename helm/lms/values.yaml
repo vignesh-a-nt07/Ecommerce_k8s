@@ -12,6 +12,13 @@ service:
 
 database:
   secretName: db-secret
+  # Database connection details - in production, override these values at deployment time
+  host: "mysql.default.svc.cluster.local"  # Internal Kubernetes service or RDS endpoint
+  port: "3306"
+  user: "ecommerce_user"
+  password: "ecommerce_pass_123"  # MUST be overridden at deployment time
+  name: "vicky_nextjs"
+  url: "mysql://ecommerce_user:ecommerce_pass_123@mysql.default.svc.cluster.local:3306/vicky_nextjs"
 
 ingress:
   enabled: true
