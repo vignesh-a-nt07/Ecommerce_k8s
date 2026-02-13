@@ -1,0 +1,99 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: ecommerce-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: navat
+      MYSQL_DATABASE: singitronic_nextjs
+      MYSQL_USER: ecommerce_user
+      MYSQL_PASSWORD: ecommerce_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - ecommerce-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # PhpMyAdmin (optional, for database management)
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: ecommerce-phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: navat
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+    networks:
+      - ecommerce-network
+    restart: unless-stopped
+
+  # Backend API (Express)
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: ecommerce-backend
+    environment:
+      DATABASE_URL: mysql://root:navat@mysql:3306/singitronic_nextjs
+      NODE_ENV: development
+      PORT: 3001
+      CORS_ORIGIN: http://localhost:3000,http://frontend:3000
+    ports:
+      - "3001:3001"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    networks:
+      - ecommerce-network
+    restart: unless-stopped
+    command: npm run dev
+
+  # Frontend (Next.js)
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ecommerce-frontend
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:3001
+      NODE_ENV: development
+      NEXTAUTH_URL: http://localhost:3000
+      NEXTAUTH_SECRET: 12D16C923BA17672F89B18C1DB22A
+      DATABASE_URL: mysql://root:navat@mysql:3306/singitronic_nextjs
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+      - mysql
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - ecommerce-network
+    restart: unless-stopped
+    command: npm run dev
+
+networks:
+  ecommerce-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local
