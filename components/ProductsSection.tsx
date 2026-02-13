@@ -17,8 +17,8 @@ const ProductsSection = async () => {
   let products = [];
   
   try {
-    // sending API request for getting all products
-    const data = await apiClient.get("/api/products");
+    // sending API request for getting all products (no pagination for home page)
+    const data = await apiClient.get("/api/products?mode=admin");
     
     if (!data.ok) {
       console.error('Failed to fetch products:', data.statusText);

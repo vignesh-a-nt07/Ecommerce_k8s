@@ -7,7 +7,7 @@ services:
     container_name: ecommerce-mysql
     environment:
       MYSQL_ROOT_PASSWORD: navat
-      MYSQL_DATABASE: singitronic_nextjs
+      MYSQL_DATABASE: vicky_nextjs
       MYSQL_USER: ecommerce_user
       MYSQL_PASSWORD: ecommerce_pass
     ports:
