@@ -26,14 +26,14 @@ const ProductItem = ({
       <Link href={`/product/${product.slug}`}>
         <Image
           src={
-            product.mainImage
-              ? `/${product.mainImage}`
-              : "/product_placeholder.jpg"
+            product.mainImage && product.mainImage.startsWith('http')
+              ? product.mainImage
+              : "https://placehold.co/300x300?text=" + encodeURIComponent(product.title || "Product")
           }
-          width="0"
-          height="0"
+          width="300"
+          height="300"
           sizes="100vw"
-          className="w-auto h-[300px]"
+          className="w-auto h-[300px] object-cover"
           alt={sanitize(product?.title) || "Product image"}
         />
       </Link>

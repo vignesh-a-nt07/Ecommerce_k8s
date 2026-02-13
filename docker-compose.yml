@@ -11,7 +11,7 @@ services:
       MYSQL_USER: ecommerce_user
       MYSQL_PASSWORD: ecommerce_pass
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql:ro
@@ -33,7 +33,7 @@ services:
       PMA_USER: root
       PMA_PASSWORD: navat
     ports:
-      - "8080:80"
+      - "8081:80"
     depends_on:
       - mysql
     networks:
@@ -63,12 +63,18 @@ services:
       - ecommerce-network
     restart: unless-stopped
     command: npm run dev
+    healthcheck:
+      test: ["CMD", "sh", "-c", "curl -f http://localhost:3001 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # Frontend (Next.js)
   frontend:
     build:
+    
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     container_name: ecommerce-frontend
     environment:
       NEXT_PUBLIC_API_BASE_URL: http://localhost:3001
@@ -79,7 +85,6 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - backend
       - mysql
     volumes:
       - .:/app
